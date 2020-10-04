@@ -1,6 +1,6 @@
 # Web Spider Games
 
-## Description:
+## About:
  - This service get data from a game store and persist it into a relational database. The main job run one time per day. Beside that there is a api with a resource to force the job execution and anothers endpoints
  
 ## Technologies used
@@ -15,6 +15,9 @@
 
 ## Swagger:
  - http://localhost:8081/swagger-ui.html#/game-api
+
+## Logs:
+ - https://my.papertrailapp.com/events?focus=1249517421707063308
 
 ## Dependencies:
  - https://github.com/eumagnun/config-server
