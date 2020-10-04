@@ -8,8 +8,10 @@
  - **SpringBoot** - main framework
  - **Mysql** (H2 for local tests) - relational database
  - **PMD** - code analyser
- - **jsoup** - html parser
- - **springfox** - swagger documentation
+ - **Jsoup** - html parser
+ - **Springfox** - swagger documentation
+ - **SpringCloudClient** - get configurations
+ - **EurekaClient** - service registry and discovery 
 
 ## Swagger:
  - http://localhost:8081/swagger-ui.html#/game-api
@@ -18,3 +20,5 @@
  - https://github.com/eumagnun/config-server
  - https://github.com/eumagnun/eureka-server
 
+## Note:
+ - Before run this project run your dependencies
