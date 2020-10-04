@@ -12,6 +12,8 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import br.com.danielamaral.webspider.util.LoggerUtil;
+
 @Service
 public class PlaystationStoreRetrieveDataProcess {
 
@@ -55,13 +57,12 @@ public class PlaystationStoreRetrieveDataProcess {
 					games = extrairPlataforma(e2, games);
 					games = extrairLinkImagem(e2, games);
 
-					System.out.println(games);
 
 					lista.add(games);
 				}
 
-			} catch (Exception ex) {
-				ex.printStackTrace();
+			} catch (Exception e) {
+				LoggerUtil.logError("getGameData", PlaystationStoreRetrieveDataProcess.class.getCanonicalName(), e.getMessage());
 			}
 
 		}
@@ -70,18 +71,20 @@ public class PlaystationStoreRetrieveDataProcess {
 	}
 
 	private int getTotalPages() {
+		LoggerUtil.logInfo("getTotalPages", "PlaystationStoreRetrieveDataProcess");
 		int totalPages = 0;
 
 		try {
 
-			Document doc = Jsoup.connect(storeUri+"1000").get();
+			Document doc = Jsoup.connect(storeUri + "1000").get();
 
 			String[] membersOfPath = doc.location().split("/");
 			ArrayUtils.reverse(membersOfPath);
 			totalPages = Integer.parseInt(membersOfPath[0]);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LoggerUtil.logError("getTotalPages", PlaystationStoreRetrieveDataProcess.class.getCanonicalName(), e.getMessage());
+
 		}
 		return totalPages;
 	}
@@ -91,6 +94,7 @@ public class PlaystationStoreRetrieveDataProcess {
 			games += e2.getElementsByClass("grid-cell--game").get(0).select("img").get(1).absUrl("src").concat(";");
 		} catch (Exception ex) {
 			games += "SEM_LINK_IMAGEM".concat(";");
+
 		}
 		return games;
 	}

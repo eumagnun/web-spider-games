@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import br.com.danielamaral.webspider.model.Game;
 import br.com.danielamaral.webspider.repository.GameRepository;
 import br.com.danielamaral.webspider.service.PlaystationStoreRetrieveDataProcess;
+import br.com.danielamaral.webspider.util.LoggerUtil;
 
 @Service
 public class PlaystationStoreJob {
@@ -30,9 +31,9 @@ public class PlaystationStoreJob {
 			Set<String> gameData = etl.getGameData();
 
 			for (String linha : gameData) {
-				
+
 				String[] gameDataValues = linha.replace(";;", ";NA;").split(";");
-				
+
 				if (gameDataValues.length > 8) {
 					Game g = new Game();
 					g.setPage(gameDataValues[0]);
@@ -51,7 +52,7 @@ public class PlaystationStoreJob {
 			gameRepository.saveAll(listaGames);
 			return "sucesso";
 		} catch (IOException e) {
-			e.printStackTrace();
+			LoggerUtil.logError("run", PlaystationStoreJob.class.getCanonicalName(), e.getMessage());
 		}
 		return "falha";
 
