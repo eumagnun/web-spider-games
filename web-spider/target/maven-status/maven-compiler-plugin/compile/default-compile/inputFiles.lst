@@ -1,0 +1,9 @@
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\WebspiderApplication.java
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\api\GameApi.java
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\job\PlaystationStoreJob.java
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\model\GameDto.java
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\util\LoggerUtil.java
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\api\SwaggerConfig.java
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\model\Game.java
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\service\PlaystationStoreRetrieveDataProcess.java
+D:\_dev_ssd\workspace-gcloud\web-spider-games\web-spider\src\main\java\br\com\danielamaral\webspider\repository\GameRepository.java

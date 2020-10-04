@@ -4,57 +4,86 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PlaystationStoreRetrieveDataProcess {
-	
+
+	@Value("${store.uri}")
+	private String storeUri;
+
+	@Value("${store.firstPage}")
+	private int storeFirstPage;
+
+	@Value("${store.defaultTotalPages}")
+	private int defaultTotalPages;
+
 	public static void main(String[] args) throws IOException {
 		PlaystationStoreRetrieveDataProcess data = new PlaystationStoreRetrieveDataProcess();
 		data.getGameData();
 	}
 
 	public Set<String> getGameData() throws IOException {
-		int numeroPaginas = 229;
+		int verifiedTotalPages = getTotalPages();
+		int numeroPaginas = verifiedTotalPages > 0 ? verifiedTotalPages : defaultTotalPages;
+
 		HashSet<String> lista = new HashSet<>();
 
-		for (int i = 52; i <= numeroPaginas; i++) {
-			
-			
+		for (int i = storeFirstPage; i <= numeroPaginas; i++) {
+
 			try {
-			
-			Document doc = Jsoup.connect("https://store.playstation.com/pt-br/grid/STORE-MSF77008-ALLGAMES/" + i).get();
 
-			Elements e1 = doc.getElementsByClass("__desktop-presentation__grid-cell__base__0ba9f ember-view");
+				Document doc = Jsoup.connect(storeUri + i).get();
 
-			for (Element e2 : e1) {
-				String games="";
-				games += i + ";";
-				games = extrairLinkDetalhes(e2, games);
-				games = extrairPercentualDesconto(e2, games);
-				games = extrairPrecoOriginal(e2, games);
-				games = extrairPrecoAtual(e2, games);
-				games = extrairNomeJogo(e2, games);
-				games = extrairTipoConteudo(e2, games);
-				games = extrairPlataforma(e2, games);
-				games = extrairLinkImagem(e2, games);
+				Elements e1 = doc.getElementsByClass("__desktop-presentation__grid-cell__base__0ba9f ember-view");
 
-				System.out.println(games);
+				for (Element e2 : e1) {
+					String games = "";
+					games += i + ";";
+					games = extrairLinkDetalhes(e2, games);
+					games = extrairPercentualDesconto(e2, games);
+					games = extrairPrecoOriginal(e2, games);
+					games = extrairPrecoAtual(e2, games);
+					games = extrairNomeJogo(e2, games);
+					games = extrairTipoConteudo(e2, games);
+					games = extrairPlataforma(e2, games);
+					games = extrairLinkImagem(e2, games);
 
-				lista.add(games);
-			}
-			
-			}catch(Exception ex) {
+					System.out.println(games);
+
+					lista.add(games);
+				}
+
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 
 		}
 
 		return lista;
+	}
+
+	private int getTotalPages() {
+		int totalPages = 0;
+
+		try {
+
+			Document doc = Jsoup.connect(storeUri+"1000").get();
+
+			String[] membersOfPath = doc.location().split("/");
+			ArrayUtils.reverse(membersOfPath);
+			totalPages = Integer.parseInt(membersOfPath[0]);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return totalPages;
 	}
 
 	private String extrairLinkImagem(Element e2, String games) {
