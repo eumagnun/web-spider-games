@@ -9,13 +9,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 
 import br.com.danielamaral.webspider.util.LoggerUtil;
 
 @Service
 public class PlaystationStoreRetrieveDataProcess {
+	
+	
+	private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(PlaystationStoreRetrieveDataProcess.class);
 
 	@Value("${store.uri}")
 	private String storeUri;
@@ -32,6 +37,8 @@ public class PlaystationStoreRetrieveDataProcess {
 	}
 
 	public Set<String> getGameData() throws IOException {
+		
+		LOG.info("Obtendo dados de games");
 		int verifiedTotalPages = getTotalPages();
 		int numeroPaginas = verifiedTotalPages > 0 ? verifiedTotalPages : defaultTotalPages;
 
@@ -71,7 +78,7 @@ public class PlaystationStoreRetrieveDataProcess {
 	}
 
 	private int getTotalPages() {
-		LoggerUtil.logInfo("getTotalPages", "PlaystationStoreRetrieveDataProcess");
+		LOG.info("Obtendo número geral de páginas");
 		int totalPages = 0;
 
 		try {

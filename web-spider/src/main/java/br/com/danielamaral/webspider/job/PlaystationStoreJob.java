@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import br.com.danielamaral.webspider.util.LoggerUtil;
 
 @Service
 public class PlaystationStoreJob {
+	
+	private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(PlaystationStoreJob.class);
+
 	@Autowired
 	private PlaystationStoreRetrieveDataProcess etl;
 
@@ -26,6 +30,7 @@ public class PlaystationStoreJob {
 
 	@Scheduled(cron = "0 01 23 1/1 * *")
 	public String run() {
+		LOG.info("Executando JOB de obtenção de dados");
 
 		try {
 			Set<String> gameData = etl.getGameData();
