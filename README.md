@@ -9,9 +9,10 @@
  - **Mysql** (H2 for local tests) - relational database
  - **PMD** - code analyser
  - **Jsoup** - html parser
- - **Springfox** - swagger documentation
- - **SpringCloudClient** - get configurations
- - **EurekaClient** - service registry and discovery 
+ - **Spring Fox** - swagger documentation
+ - **Spring Cloud Client** - get configurations
+ - **Spring Cloud Sleuth** - tracing
+ - **Eureka Client** - service registry and discovery 
 
 ## Swagger:
  - http://localhost:8081/swagger-ui.html#/game-api
