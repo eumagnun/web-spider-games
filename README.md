@@ -25,4 +25,4 @@
  - https://github.com/eumagnun/eureka-server
 
 ## Note:
- - Before run this project run your dependencies
+ - Before run this project run the dependencies
