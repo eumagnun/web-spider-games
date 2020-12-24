@@ -1,7 +1,7 @@
 # Web Spider Games
 
 ## About:
- - This service get data from a game store and persist it into a relational database. The main job run one time per day. Beside that there is a api with a resource to force the job execution and anothers endpoints
+ - This service get data from a game store and persist it into a relational database. The main job run one time per day. Beside that there is a api with a resource to force the job execution and others endpoints
  
 ## Technologies used
  - **Java 11** - programming language
