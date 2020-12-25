@@ -16,7 +16,7 @@
 	<description>Web Spider</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 		<lombok.version>1.18.8</lombok.version>
 		<springfox-version>2.9.2</springfox-version>
 		<apache-commons>3.5</apache-commons>
@@ -126,6 +126,15 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<reporting>
