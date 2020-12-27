@@ -22,8 +22,12 @@ public class PlaystationStoreRetrieveDataProcess {
 	
 	private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(PlaystationStoreRetrieveDataProcess.class);
 
+	@Value("${store.domain}")
+	private String domain;
+	
 	@Value("${store.uri}")
 	private String storeUri;
+	
 
 	@Value("${store.firstPage}")
 	private int storeFirstPage;
@@ -39,8 +43,11 @@ public class PlaystationStoreRetrieveDataProcess {
 	public Set<String> getGameData() throws IOException {
 		
 		LOG.info("Obtendo dados de games");
-		int verifiedTotalPages = getTotalPages();
-		int numeroPaginas = verifiedTotalPages > 0 ? verifiedTotalPages : defaultTotalPages;
+		//não foi possivel obter o numero total de páginas após atualização da loja
+		//int verifiedTotalPages = getTotalPages();
+		//int numeroPaginas = verifiedTotalPages > 0 ? verifiedTotalPages : defaultTotalPages;
+		
+		int numeroPaginas = defaultTotalPages;
 
 		HashSet<String> lista = new HashSet<>();
 
@@ -48,19 +55,19 @@ public class PlaystationStoreRetrieveDataProcess {
 
 			try {
 
-				Document doc = Jsoup.connect(storeUri + i).get();
+				Document doc = Jsoup.connect(domain+storeUri + i).get();
 
-				Elements e1 = doc.getElementsByClass("__desktop-presentation__grid-cell__base__0ba9f ember-view");
+				Elements e1 = doc.select("div.ems-sdk-product-tile");
 
 				for (Element e2 : e1) {
 					String games = "";
-					games += i + ";";
+					games += i +  ";";
+					games = extrairNomeJogo(e2, games);
 					games = extrairLinkDetalhes(e2, games);
 					games = extrairPercentualDesconto(e2, games);
 					games = extrairPrecoOriginal(e2, games);
 					games = extrairPrecoAtual(e2, games);
-					games = extrairNomeJogo(e2, games);
-					games = extrairTipoConteudo(e2, games);
+					//games = extrairTipoConteudo(e2, games);
 					games = extrairPlataforma(e2, games);
 					games = extrairLinkImagem(e2, games);
 
@@ -69,6 +76,7 @@ public class PlaystationStoreRetrieveDataProcess {
 				}
 
 			} catch (Exception e) {
+				e.printStackTrace();
 				LoggerUtil.logError("getGameData", PlaystationStoreRetrieveDataProcess.class.getCanonicalName(), e.getMessage());
 			}
 
@@ -78,27 +86,39 @@ public class PlaystationStoreRetrieveDataProcess {
 	}
 
 	private int getTotalPages() {
-		LOG.info("Obtendo número geral de páginas");
-		int totalPages = 0;
+		return 89;
+		/*
+		 * LOG.info("Obtendo número geral de páginas"); int totalPages = 0;
+		 * 
+		 * try {
+		 * 
+		 * Document doc = Jsoup.connect(storeUri + "1000").get();
+		 * 
+		 * String[] membersOfPath = doc.location().split("/");
+		 * ArrayUtils.reverse(membersOfPath); totalPages =
+		 * Integer.parseInt(membersOfPath[0]);
+		 * 
+		 * } catch (Exception e) { LoggerUtil.logError("getTotalPages",
+		 * PlaystationStoreRetrieveDataProcess.class.getCanonicalName(),
+		 * e.getMessage());
+		 * 
+		 * } return totalPages;
+		 */
+	}
+	
+	private String extrairLinkDetalhes(Element e2, String games) {
+		try { 
+		games+= e2.select("a.ems-sdk-product-tile-link").first().absUrl("href").concat(";");
 
-		try {
-
-			Document doc = Jsoup.connect(storeUri + "1000").get();
-
-			String[] membersOfPath = doc.location().split("/");
-			ArrayUtils.reverse(membersOfPath);
-			totalPages = Integer.parseInt(membersOfPath[0]);
-
-		} catch (Exception e) {
-			LoggerUtil.logError("getTotalPages", PlaystationStoreRetrieveDataProcess.class.getCanonicalName(), e.getMessage());
-
+		} catch (Exception ex) {
+			games += "SEM_LINK_DETALHE".concat(";");
 		}
-		return totalPages;
+		return games;
 	}
 
 	private String extrairLinkImagem(Element e2, String games) {
 		try {
-			games += e2.getElementsByClass("grid-cell--game").get(0).select("img").get(1).absUrl("src").concat(";");
+			games += e2.getElementsByClass("psw-media-frame psw-fill-x psw-image psw-aspect-1-1").get(0).select("img").get(1).absUrl("src").concat(";");
 		} catch (Exception ex) {
 			games += "SEM_LINK_IMAGEM".concat(";");
 
@@ -108,7 +128,7 @@ public class PlaystationStoreRetrieveDataProcess {
 
 	private String extrairPlataforma(Element e2, String games) {
 		try {
-			games += e2.getElementsByClass("grid-cell__left-detail grid-cell__left-detail--detail-1").text()
+			games += e2.getElementsByClass("psw-p-x-3xs ems-sdk-product-tile-image__badge").text()
 					.concat(";");
 		} catch (Exception ex) {
 			games += "SEM_PLATAFORMA".concat(";");
@@ -128,7 +148,7 @@ public class PlaystationStoreRetrieveDataProcess {
 
 	private String extrairNomeJogo(Element e2, String games) {
 		try {
-			games += e2.getElementsByClass("grid-cell__title ").text().concat(";");
+			games += e2.getElementsByClass("psw-body-2 psw-truncate-text-2 psw-p-t-2xs").text().concat(";");
 		} catch (Exception ex) {
 			games += "SEM_NOME_JOGO".concat(";");
 		}
@@ -137,7 +157,7 @@ public class PlaystationStoreRetrieveDataProcess {
 
 	private String extrairPrecoAtual(Element e2, String games) {
 		try {
-			games += e2.getElementsByClass("price-display__price").text().concat(";");
+			games += e2.getElementsByClass("price").first().text().concat(";");
 		} catch (Exception ex) {
 			games += "SEM_PRECO_ATUAL".concat(";");
 		}
@@ -146,7 +166,7 @@ public class PlaystationStoreRetrieveDataProcess {
 
 	private String extrairPrecoOriginal(Element e2, String games) {
 		try {
-			games += e2.getElementsByClass("price").text().concat(";");
+			games += e2.getElementsByClass("price price--strikethrough psw-m-l-xs").text().concat(";");
 		} catch (Exception ex) {
 			games += "SEM_PRECO_ORIGINAL".concat(";");
 		}
@@ -155,20 +175,13 @@ public class PlaystationStoreRetrieveDataProcess {
 
 	private String extrairPercentualDesconto(Element e2, String games) {
 		try {
-			games += e2.getElementsByClass("discount-badge__message").text().concat(";");
+			games += e2.getElementsByClass("psw-body-2 discount-badge discount-badge--undefined").text().concat(";");
 		} catch (Exception ex) {
 			games += "SEM_PERCENTUAL_DESCONTO".concat(";");
 		}
 		return games;
 	}
 
-	private String extrairLinkDetalhes(Element e2, String games) {
-		try {
-			games += e2.getElementsByClass("grid-cell--game").first().select("a").get(1).absUrl("href").concat(";");
-		} catch (Exception ex) {
-			games += "SEM_LINK_DETALHE".concat(";");
-		}
-		return games;
-	}
+	
 
 }
